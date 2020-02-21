@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -29,6 +30,8 @@ public class WalletService {
                 .email(createWallet.getEmail())
                 .birthDate(createWallet.getBirthDate())
                 .walletBalance(createWallet.getWalletBalance())
+                .transactionDate(LocalDate.now())
+                .transactionType("created wallet")
                 .build();
         walletRepository.save(walletEntity);
         System.out.println("I AM HERE" + createWallet.toString());
@@ -41,14 +44,35 @@ public class WalletService {
                 .orElse(null);
     }
 
+    public Double getWalletBalance(Long id) {
+        return walletRepository
+                .findById(id)
+                .orElse(null).getWalletBalance();
+    }
+
     public void updateById(Create createWallet, Long id) {
         WalletEntity walletEntityUpdate = walletRepository.getOne(id);
         walletEntityUpdate.setFirstName(createWallet.getFirstName());
         walletEntityUpdate.setLastName(createWallet.getLastName());
         walletEntityUpdate.setEmail(createWallet.getEmail());
         walletEntityUpdate.setBirthDate(createWallet.getBirthDate());
-        walletEntityUpdate.setWalletBalance(createWallet.getWalletBalance());
-        System.out.println(walletEntityUpdate.getWalletBalance());
+        walletEntityUpdate.setWalletBalance(createWallet.getWalletBalance()+getWalletBalance(id));
+        walletRepository.save(walletEntityUpdate);
+    }
+
+    public void topUp(Create createWallet, Long id) {
+        WalletEntity walletEntityUpdate = walletRepository.getOne(id);
+        walletEntityUpdate.setWalletBalance(createWallet.getWalletBalance()+getWalletBalance(id));
+        walletEntityUpdate.setTransactionDate(LocalDate.now());
+        walletEntityUpdate.setTransactionType("top up");
+        walletRepository.save(walletEntityUpdate);
+    }
+
+    public void withdrawWallet(Create createWallet, Long id) {
+        WalletEntity walletEntityUpdate = walletRepository.getOne(id);
+        walletEntityUpdate.setWalletBalance(Math.abs(createWallet.getWalletBalance()-getWalletBalance(id)));
+        walletEntityUpdate.setTransactionDate(LocalDate.now());
+        walletEntityUpdate.setTransactionType("withdraw");
         walletRepository.save(walletEntityUpdate);
     }
 

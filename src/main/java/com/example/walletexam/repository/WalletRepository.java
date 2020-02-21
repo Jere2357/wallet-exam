@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface WalletRepository extends JpaRepository<WalletEntity, Long> {
     List<WalletEntity> findAllByFirstName(String firstName);
-    List<WalletEntity> findAllByWalletBalance(Double walletBalance);
 }

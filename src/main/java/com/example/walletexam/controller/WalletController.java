@@ -51,4 +51,16 @@ public class WalletController {
         System.out.println(createWallet);
         walletService.updateById(createWallet, id);
     }
+
+    @PutMapping(path = "records/topUp/{id}")
+    public void topUp(@RequestBody Create createWallet, @PathVariable Long id) {
+        System.out.println(createWallet);
+        walletService.topUp(createWallet, id);
+    }
+
+    @PutMapping(path = "records/withdraw/{id}")
+    public void withdrawWallet(@RequestBody Create createWallet, @PathVariable Long id) {
+        System.out.println(createWallet);
+        walletService.withdrawWallet(createWallet, id);
+    }
 }

@@ -15,6 +15,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "test_table")
+@SecondaryTables({
+        @SecondaryTable(name = "transaction_table", pkJoinColumns = @PrimaryKeyJoinColumn(name = "transaction_id"))
+})
 public class WalletEntity {
     @Id
     @Column
@@ -35,4 +38,10 @@ public class WalletEntity {
 
     @Column
     private Double walletBalance;
+
+    @Column(name="transactionType", table="transaction_table")
+    private String transactionType;
+
+    @Column(name="transactionDate", table="transaction_table")
+    private LocalDate transactionDate;
 }
