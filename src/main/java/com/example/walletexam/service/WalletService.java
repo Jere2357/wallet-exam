@@ -1,7 +1,10 @@
 package com.example.walletexam.service;
 
 import com.example.walletexam.dto.Create;
+import com.example.walletexam.dto.Transfer;
+import com.example.walletexam.entity.TransferEntity;
 import com.example.walletexam.entity.WalletEntity;
+import com.example.walletexam.repository.TransferRepository;
 import com.example.walletexam.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +16,12 @@ import java.util.List;
 @Service
 public class WalletService {
     private WalletRepository walletRepository;
+    private TransferRepository transferRepository;
 
     @Autowired
-    public WalletService(WalletRepository walletRepository) {
+    public WalletService(WalletRepository walletRepository, TransferRepository transferRepository) {
         this.walletRepository = walletRepository;
+        this.transferRepository = transferRepository;
     }
 
     public List<WalletEntity> getAll() {
@@ -50,7 +55,11 @@ public class WalletService {
                 .orElse(null).getWalletBalance();
     }
 
-    public void updateById(Create createWallet, Long id) {
+    public Double transferWalletSum(Long id, Double transferAmount) {
+        return getWalletBalance(id) + transferAmount;
+    }
+
+    public void updateRecords(Create createWallet, Long id) {
         WalletEntity walletEntityUpdate = walletRepository.getOne(id);
         walletEntityUpdate.setFirstName(createWallet.getFirstName());
         walletEntityUpdate.setLastName(createWallet.getLastName());
@@ -73,6 +82,12 @@ public class WalletService {
         walletEntityUpdate.setWalletBalance(Math.abs(createWallet.getWalletBalance()-getWalletBalance(id)));
         walletEntityUpdate.setTransactionDate(LocalDate.now());
         walletEntityUpdate.setTransactionType("withdraw");
+        walletRepository.save(walletEntityUpdate);
+    }
+
+    public void transferWallet(Transfer transferWallet, Long id) {
+        WalletEntity walletEntityUpdate = walletRepository.getOne(transferWallet.getTransferTo());
+        walletEntityUpdate.setWalletBalance(transferWallet.getTransferBalance()+getWalletBalance(transferWallet.getTransferTo()));
         walletRepository.save(walletEntityUpdate);
     }
 

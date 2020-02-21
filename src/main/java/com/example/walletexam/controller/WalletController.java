@@ -1,6 +1,7 @@
 package com.example.walletexam.controller;
 
 import com.example.walletexam.dto.Create;
+import com.example.walletexam.dto.Transfer;
 import com.example.walletexam.entity.WalletEntity;
 import com.example.walletexam.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "wallet")
 public class WalletController {
@@ -47,20 +49,23 @@ public class WalletController {
     }
 
     @PutMapping(path = "records/{id}")
-    public void updateById(@RequestBody Create createWallet, @PathVariable Long id) {
+    public void updateRecords(@RequestBody Create createWallet, @PathVariable Long id) {
         System.out.println(createWallet);
-        walletService.updateById(createWallet, id);
+        walletService.updateRecords(createWallet, id);
     }
 
-    @PutMapping(path = "records/topUp/{id}")
+    @PutMapping(path = "records/top_up/{id}")
     public void topUp(@RequestBody Create createWallet, @PathVariable Long id) {
-        System.out.println(createWallet);
         walletService.topUp(createWallet, id);
     }
 
     @PutMapping(path = "records/withdraw/{id}")
     public void withdrawWallet(@RequestBody Create createWallet, @PathVariable Long id) {
-        System.out.println(createWallet);
         walletService.withdrawWallet(createWallet, id);
+    }
+
+    @PutMapping(path = "records/transfer/{id}")
+    public void transferWallet(@RequestBody Transfer transfer, @PathVariable Long id) {
+        walletService.transferWallet(transfer, id);
     }
 }
