@@ -2,9 +2,7 @@ package com.example.walletexam.service;
 
 import com.example.walletexam.dto.Create;
 import com.example.walletexam.dto.Transfer;
-import com.example.walletexam.entity.TransferEntity;
 import com.example.walletexam.entity.WalletEntity;
-import com.example.walletexam.repository.TransferRepository;
 import com.example.walletexam.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +57,7 @@ public class WalletService {
         walletEntityUpdate.setLastName(createWallet.getLastName());
         walletEntityUpdate.setEmail(createWallet.getEmail());
         walletEntityUpdate.setBirthDate(createWallet.getBirthDate());
-        walletEntityUpdate.setWalletBalance(createWallet.getWalletBalance()+getWalletBalance(id));
+        walletEntityUpdate.setWalletBalance(createWallet.getWalletBalance());
         walletRepository.save(walletEntityUpdate);
     }
 
