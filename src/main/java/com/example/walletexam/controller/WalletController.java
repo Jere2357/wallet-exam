@@ -54,17 +54,17 @@ public class WalletController {
         walletService.updateRecords(createWallet, id);
     }
 
-    @PutMapping(path = "records/top_up/{id}")
+    @PutMapping(path = "top-up/{id}")
     public void topUp(@RequestBody Create createWallet, @PathVariable Long id) {
         walletService.topUp(createWallet, id);
     }
 
-    @PutMapping(path = "records/withdraw/{id}")
+    @PutMapping(path = "withdraw/{id}")
     public void withdrawWallet(@RequestBody Create createWallet, @PathVariable Long id) {
         walletService.withdrawWallet(createWallet, id);
     }
 
-    @PutMapping(path = "records/transfer/{id}")
+    @PutMapping(path = "transfer/{id}")
     public void transferWallet(@RequestBody Transfer transfer, @PathVariable Long id) {
         walletService.transferWallet(transfer, id);
     }

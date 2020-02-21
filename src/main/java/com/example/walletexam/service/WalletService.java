@@ -16,12 +16,10 @@ import java.util.List;
 @Service
 public class WalletService {
     private WalletRepository walletRepository;
-    private TransferRepository transferRepository;
 
     @Autowired
-    public WalletService(WalletRepository walletRepository, TransferRepository transferRepository) {
+    public WalletService(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
-        this.transferRepository = transferRepository;
     }
 
     public List<WalletEntity> getAll() {
@@ -55,10 +53,6 @@ public class WalletService {
                 .orElse(null).getWalletBalance();
     }
 
-    public Double transferWalletSum(Long id, Double transferAmount) {
-        return getWalletBalance(id) + transferAmount;
-    }
-
     public void updateRecords(Create createWallet, Long id) {
         WalletEntity walletEntityUpdate = walletRepository.getOne(id);
         walletEntityUpdate.setFirstName(createWallet.getFirstName());
@@ -86,9 +80,13 @@ public class WalletService {
     }
 
     public void transferWallet(Transfer transferWallet, Long id) {
-        WalletEntity walletEntityUpdate = walletRepository.getOne(transferWallet.getTransferTo());
-        walletEntityUpdate.setWalletBalance(transferWallet.getTransferBalance()+getWalletBalance(transferWallet.getTransferTo()));
-        walletRepository.save(walletEntityUpdate);
+        if(!id.equals(transferWallet.getTransferTo())) {
+            WalletEntity walletEntityUpdate = walletRepository.getOne(transferWallet.getTransferTo());
+            walletEntityUpdate.setWalletBalance(transferWallet.getTransferBalance() + getWalletBalance(transferWallet.getTransferTo()));
+            walletEntityUpdate.setTransactionDate(LocalDate.now());
+            walletEntityUpdate.setTransactionType("transfer");
+            walletRepository.save(walletEntityUpdate);
+        }
     }
 
     public List<WalletEntity> getAllByFirstName(@PathVariable String firstName) {
