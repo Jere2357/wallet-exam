@@ -78,12 +78,21 @@ public class WalletService {
     }
 
     public void transferWallet(Transfer transferWallet, Long id) {
-        if(!id.equals(transferWallet.getTransferTo())) {
-            WalletEntity walletEntityUpdate = walletRepository.getOne(transferWallet.getTransferTo());
-            walletEntityUpdate.setWalletBalance(transferWallet.getTransferBalance() + getWalletBalance(transferWallet.getTransferTo()));
+        WalletEntity walletEntityUpdate = walletRepository.getOne(transferWallet.getTransferTo());
+        WalletEntity walletEntitySender = walletRepository.getOne(id);
+
+        Double getTransferBalance = transferWallet.getTransferBalance() + getWalletBalance(transferWallet.getTransferTo());
+
+        if(!id.equals(transferWallet.getTransferTo()) & (transferWallet.getTransferBalance() <= getWalletBalance(id))) {
+            walletEntityUpdate.setWalletBalance(getTransferBalance);
             walletEntityUpdate.setTransactionDate(LocalDate.now());
             walletEntityUpdate.setTransactionType("transfer");
+
+            walletEntitySender.setWalletBalance(Math.abs(transferWallet.getTransferBalance()-getWalletBalance(id)));
+
             walletRepository.save(walletEntityUpdate);
+
+            walletRepository.save(walletEntitySender);
         }
     }
 
